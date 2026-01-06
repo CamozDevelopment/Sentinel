@@ -326,9 +326,9 @@ app.delete('/api/server/:guildId/blockedwords/clear', checkAuth, async (req, res
 client.login(config.token).then(() => {
     console.log('✅ Bot client connected for dashboard');
     
-    // Start web server after bot is ready
-    app.listen(PORT, () => {
-        console.log(`🌐 Dashboard running at http://localhost:${PORT}`);
-        console.log(`📝 Login at http://localhost:${PORT}/login`);
+    // Start web server after bot is ready (listen on all interfaces)
+    app.listen(PORT, '0.0.0.0', () => {
+        console.log(`🌐 Dashboard running at http://0.0.0.0:${PORT}`);
+        console.log(`📝 Access at http://vmi3007350.contaboserver.net:${PORT}`);
     });
 });
