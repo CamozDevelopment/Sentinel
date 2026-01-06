@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Selection - Sentinel</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="content-wrapper">
+        <nav class="navbar">
+            <a href="/" class="logo">
+                <i class="fas fa-shield-halved"></i>
+                Sentinel
+            </a>
+            <div class="user-info">
+                <img src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png" alt="Avatar" class="avatar">
+                <span class="username"><%= user.username %></span>
+                <a href="/logout" class="btn btn-secondary">
+                    <i class="fas fa-right-from-bracket"></i>
+                    Logout
+                </a>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="page-header">
+                <h1><i class="fas fa-server"></i> Select a Server</h1>
+                <p>Choose a server to configure its protection settings</p>
+            </div>
+
+            <% if (guilds.length === 0) { %>
+                <div style="text-align: center; padding: 5rem 2rem; background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid var(--border);">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--warning); margin-bottom: 1.5rem;"></i>
+                    <h2 style="margin-bottom: 1rem; color: var(--text-secondary);">No servers found</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Make sure the bot is invited to your server and you have Manage Server permission.</p>
+                    <a href="https://discord.com/api/oauth2/authorize?client_id=<%= process.env.CLIENT_ID || '1457723088627175435' %>&permissions=8&scope=bot%20applications.commands" target="_blank" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Invite Bot to Your Server
+                    </a>
+                </div>
+            <% } else { %>
+                <div class="server-grid">
+                    <% guilds.forEach(guild => { %>
+                        <a href="/dashboard/<%= guild.id %>" class="server-card">
+                            <div class="server-icon">
+                                <% if (guild.icon) { %>
+                                    <img src="https://cdn.discordapp.com/icons/<%= guild.id %>/<%= guild.icon %>.png" alt="<%= guild.name %>">
+                                <% } else { %>
+                                    <%= guild.name.charAt(0) %>
+                                <% } %>
+                            </div>
+                            <div class="server-name"><%= guild.name %></div>
+                            <div class="server-members">
+                                <i class="fas fa-users"></i>
+                                Click to configure
+                            </div>
+                        </a>
+                    <% }); %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>

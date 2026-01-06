@@ -1,0 +1,9 @@
+node_modules/
+.env
+config.json
+data/
+servers/
+*.log
+.DS_Store
+*.swp
+*.swo
