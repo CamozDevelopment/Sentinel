@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= guild.name %> - Sentinel</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="content-wrapper">
+        <nav class="navbar">
+            <a href="/" class="logo">
+                <i class="fas fa-shield-halved"></i>
+                Sentinel
+            </a>
+            <div class="user-info">
+                <img src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png" alt="Avatar" class="avatar">
+                <span class="username"><%= user.username %></span>
+                <a href="/dashboard" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </a>
+                <a href="/logout" class="btn btn-secondary">
+                    <i class="fas fa-right-from-bracket"></i>
+                    Logout
+                </a>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="page-header">
+                <h1><i class="fas fa-server"></i> <%= guild.name %></h1>
+                <p><i class="fas fa-users"></i> <%= guild.memberCount %> members</p>
+            </div>
+
+            <div id="alert" class="alert"></div>
+
+            <div class="settings-layout">
+                <aside class="settings-sidebar">
+                    <nav>
+                        <a href="#automod" class="nav-link active" data-section="automod">
+                            <i class="fas fa-robot"></i>
+                            Auto-Moderation
+                        </a>
+                        <a href="#blockedwords" class="nav-link" data-section="blockedwords">
+                            <i class="fas fa-ban"></i>
+                            Blocked Words
+                        </a>
+                        <a href="#antispam" class="nav-link" data-section="antispam">
+                            <i class="fas fa-comments"></i>
+                            Anti-Spam
+                        </a>
+                        <a href="#antinuke" class="nav-link" data-section="antinuke">
+                            <i class="fas fa-bomb"></i>
+                            Anti-Nuke
+                        </a>
+                        <a href="#logging" class="nav-link" data-section="logging">
+                            <i class="fas fa-clipboard-list"></i>
+                            Logging
+                        </a>
+                        <a href="#welcome" class="nav-link" data-section="welcome">
+                            <i class="fas fa-door-open"></i>
+                            Welcome
+                        </a>
+                        <a href="#leave" class="nav-link" data-section="leave">
+                            <i class="fas fa-door-closed"></i>
+                            Leave
+                        </a>
+                        <a href="#autorole" class="nav-link" data-section="autorole">
+                            <i class="fas fa-user-tag"></i>
+                            Auto-Role
+                        </a>
+                        <a href="#moderation" class="nav-link" data-section="moderation">
+                            <i class="fas fa-gavel"></i>
+                            Moderation
+                        </a>
+                        <a href="#security" class="nav-link" data-section="security">
+                            <i class="fas fa-lock"></i>
+                            Security
+                        </a>
+                    </nav>
+                </aside>
+
+            <main class="settings-content">
+                <!-- Auto-Moderation Section -->
+                <section id="automod-section" class="setting-section active">
+                    <div class="setting-group">
+                        <h3><i class="fas fa-robot"></i> Auto-Moderation</h3>
+                        <p>Automatically moderate messages based on content rules</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Enable Auto-Moderation</label>
+                            <small>Activate automatic message filtering</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="automod-enabled" <%= config.autoMod.enabled ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Block Links</label>
+                            <small>Delete messages containing URLs</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="automod-blockLinks" <%= config.autoMod.blockLinks ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Block Discord Invites</label>
+                            <small>Delete messages with Discord invite links</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="automod-blockInvites" <%= config.autoMod.blockInvites ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Caps Limit</h3>
+                        <div class="setting-item">
+                            <label for="automod-maxCapsPercent">Maximum Caps Percentage</label>
+                            <input type="number" id="automod-maxCapsPercent" value="<%= config.autoMod.maxCapsPercent %>" min="0" max="100" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="automod-maxCapsMinLength">Minimum Message Length</label>
+                            <input type="number" id="automod-maxCapsMinLength" value="<%= config.autoMod.maxCapsMinLength %>" min="0" style="width: 100px;">
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Spam Filters</h3>
+                        <div class="setting-item">
+                            <label for="automod-maxEmojis">Max Emojis Per Message</label>
+                            <input type="number" id="automod-maxEmojis" value="<%= config.autoMod.maxEmojis %>" min="0" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="automod-maxMentions">Max Mentions Per Message</label>
+                            <input type="number" id="automod-maxMentions" value="<%= config.autoMod.maxMentions %>" min="0" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="automod-maxDuplicates">Max Duplicate Messages</label>
+                            <input type="number" id="automod-maxDuplicates" value="<%= config.autoMod.maxDuplicates %>" min="0" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="automod-maxNewlines">Max Line Breaks</label>
+                            <input type="number" id="automod-maxNewlines" value="<%= config.autoMod.maxNewlines %>" min="0" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="automod-repeatedChars">Max Repeated Characters</label>
+                            <input type="number" id="automod-repeatedChars" value="<%= config.autoMod.repeatedChars %>" min="0" style="width: 100px;">
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Block Zalgo Text</label>
+                            <small>Block messages with excessive unicode characters</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="automod-blockZalgo" <%= config.autoMod.blockZalgo ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Block Spoiler Spam</label>
+                            <small>Block messages with excessive spoiler tags</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="automod-blockSpoilers" <%= config.autoMod.blockSpoilers ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <button class="btn btn-success" onclick="saveAutoMod()">
+                        <i class="fas fa-save"></i>
+                        Save Auto-Mod Settings
+                    </button>
+                </section>
+
+                <!-- Blocked Words Section -->
+                <section id="blockedwords-section" class="setting-section">
+                    <div class="setting-group">
+                        <h3><i class="fas fa-ban"></i> Blocked Words</h3>
+                        <p>Manage your custom word filter list. Use * for wildcards (e.g., *badword*)</p>
+                    </div>
+
+                    <div class="word-input-group">
+                        <input type="text" id="word-input" placeholder="Enter word or pattern (supports * wildcards)">
+                        <button class="btn btn-primary" onclick="addWord()">
+                            <i class="fas fa-plus"></i>
+                            Add Word
+                        </button>
+                    </div>
+
+                    <div class="word-input-group">
+                        <textarea id="bulk-input" placeholder="Paste multiple words separated by commas" rows="3"></textarea>
+                        <button class="btn btn-primary" onclick="bulkAddWords()">
+                            <i class="fas fa-layer-group"></i>
+                            Bulk Add
+                        </button>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="addPreset('profanity-basic')">
+                            <i class="fas fa-plus"></i>
+                            Basic Profanity
+                        </button>
+                        <button class="btn btn-secondary" onclick="addPreset('profanity-strict')">
+                            <i class="fas fa-plus"></i>
+                            Strict Profanity
+                        </button>
+                        <button class="btn btn-secondary" onclick="addPreset('slurs')">
+                            <i class="fas fa-plus"></i>
+                            Slurs
+                        </button>
+                        <button class="btn btn-secondary" onclick="addPreset('spam')">
+                            <i class="fas fa-plus"></i>
+                            Spam
+                        </button>
+                        <button class="btn btn-danger" onclick="clearWords()">
+                            <i class="fas fa-trash"></i>
+                            Clear All
+                        </button>
+                    </div>
+
+                    <div class="words-list" id="words-list">
+                        <% config.autoMod.blockedWords.forEach(word => { %>
+                            <div class="word-tag">
+                                <span><%= word %></span>
+                                <span class="remove" onclick="removeWord('<%= word %>')">×</span>
+                            </div>
+                        <% }); %>
+                    </div>
+                </section>
+
+                <!-- Anti-Spam Section -->
+                <section id="antispam-section" class="setting-section">
+                    <div class="setting-group">
+                        <h3>⚡ Anti-Spam</h3>
+                        <p>Prevent users from spamming messages</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Enable Anti-Spam</label>
+                            <small>Monitor and punish rapid messaging</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="antispam-enabled" <%= config.antiSpam.enabled ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Spam Thresholds</h3>
+                        <div class="setting-item">
+                            <label for="antispam-maxMessages">Maximum Messages</label>
+                            <input type="number" id="antispam-maxMessages" value="<%= config.antiSpam.maxMessages %>" min="1" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="antispam-timeWindow">Time Window (ms)</label>
+                            <input type="number" id="antispam-timeWindow" value="<%= config.antiSpam.timeWindow %>" min="1000" step="1000" style="width: 120px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="antispam-muteTime">Mute Duration (minutes)</label>
+                            <input type="number" id="antispam-muteTime" value="<%= config.antiSpam.muteTime %>" min="1" style="width: 100px;">
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Media Spam Protection</h3>
+                        <div class="setting-item">
+                            <div>
+                                <label>Image Spam Detection</label>
+                                <small>Detect rapid image posting</small>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" id="antispam-imageSpam" <%= config.antiSpam.imageSpam ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="antispam-maxImages">Max Images in Time Window</label>
+                            <input type="number" id="antispam-maxImages" value="<%= config.antiSpam.maxImages %>" min="1" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <label>File Spam Detection</label>
+                                <small>Detect rapid file uploading</small>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" id="antispam-fileSpam" <%= config.antiSpam.fileSpam ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="antispam-maxFiles">Max Files in Time Window</label>
+                            <input type="number" id="antispam-maxFiles" value="<%= config.antiSpam.maxFiles %>" min="1" style="width: 100px;">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" onclick="saveAntiSpam()">
+                        <i class="fas fa-save"></i>
+                        Save Anti-Spam Settings
+                    </button>
+                </section>
+
+                <!-- Anti-Nuke Section -->
+                <section id="antinuke-section" class="setting-section">
+                    <div class="setting-group">
+                        <h3>🛡️ Anti-Nuke Protection</h3>
+                        <p>Protect against malicious mass actions</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Enable Anti-Nuke</label>
+                            <small>Monitor for suspicious administrative actions</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="antinuke-enabled" <%= config.antiNuke.enabled ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Action Limits</h3>
+                        <div class="setting-item">
+                            <label for="antinuke-maxChannelDeletes">Max Channel Deletes</label>
+                            <input type="number" id="antinuke-maxChannelDeletes" value="<%= config.antiNuke.maxChannelDeletes %>" min="1" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="antinuke-maxRoleDeletes">Max Role Deletes</label>
+                            <input type="number" id="antinuke-maxRoleDeletes" value="<%= config.antiNuke.maxRoleDeletes %>" min="1" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="antinuke-maxBans">Max Bans</label>
+                            <input type="number" id="antinuke-maxBans" value="<%= config.antiNuke.maxBans %>" min="1" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="antinuke-maxKicks">Max Kicks</label>
+                            <input type="number" id="antinuke-maxKicks" value="<%= config.antiNuke.maxKicks %>" min="1" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="antinuke-timeWindow">Time Window (ms)</label>
+                            <input type="number" id="antinuke-timeWindow" value="<%= config.antiNuke.timeWindow %>" min="1000" step="1000" style="width: 120px;">
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Punishment Settings</h3>
+                        <div class="setting-item">
+                            <label for="antinuke-punishment">Punishment Type</label>
+                            <select id="antinuke-punishment" style="padding: 0.875rem; background: rgba(15, 23, 42, 0.6); border: 2px solid var(--border); color: var(--text-primary); border-radius: 10px; font-size: 0.95rem;">
+                                <option value="ban" <%= config.antiNuke.punishment === 'ban' ? 'selected' : '' %>>Ban</option>
+                                <option value="kick" <%= config.antiNuke.punishment === 'kick' ? 'selected' : '' %>>Kick</option>
+                                <option value="mute" <%= config.antiNuke.punishment === 'mute' ? 'selected' : '' %>>Mute</option>
+                                <option value="strip_roles" <%= config.antiNuke.punishment === 'strip_roles' ? 'selected' : '' %>>Strip Roles</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="antinuke-muteTime">Mute Duration (ms)</label>
+                            <input type="number" id="antinuke-muteTime" value="<%= config.antiNuke.muteTime %>" min="60000" step="60000" style="width: 150px;">
+                            <small>Only applies if punishment is mute (default: 1 hour)</small>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <label>Notify User</label>
+                                <small>Send DM to user about the punishment</small>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" id="antinuke-notifyUser" <%= config.antiNuke.notifyUser ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <label>Remove All Roles</label>
+                                <small>Strip all roles before punishment (except @everyone)</small>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" id="antinuke-removeRoles" <%= config.antiNuke.removeRoles ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" onclick="saveAntiNuke()">
+                        <i class="fas fa-save"></i>
+                        Save Anti-Nuke Settings
+                    </button>
+                </section>
+
+                <!-- Logging Section -->
+                <section id="logging-section" class="setting-section">
+                    <div class="setting-group">
+                        <h3>📝 Logging System</h3>
+                        <p>Log server events to a channel</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Enable Logging</label>
+                            <small>Master toggle for event logging</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="logging-enabled" <%= config.logging.enabled ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="logging-logChannel">Log Channel</label>
+                        <select id="logging-logChannel" style="padding: 0.875rem; background: rgba(15, 23, 42, 0.6); border: 2px solid var(--border); color: var(--text-primary); border-radius: 10px; font-size: 0.95rem;">
+                            <option value="">-- Select Channel --</option>
+                            <% channels.forEach(channel => { %>
+                                <option value="<%= channel.id %>" <%= config.logging.logChannel === channel.id ? 'selected' : '' %>>
+                                    # <%= channel.name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Log Events</h3>
+                        <div class="setting-item">
+                            <label>Message Deletions</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="logging-messageDelete" <%= config.logging.messageDelete ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>Message Edits</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="logging-messageEdit" <%= config.logging.messageEdit ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>Member Joins</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="logging-memberJoin" <%= config.logging.memberJoin ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>Member Leaves</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="logging-memberLeave" <%= config.logging.memberLeave ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>Bans & Kicks</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="logging-memberBan" <%= config.logging.memberBan ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>Role Updates</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="logging-roleUpdate" <%= config.logging.roleUpdate ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>Channel Updates</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="logging-channelUpdate" <%= config.logging.channelUpdate ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>Nickname Changes</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="logging-nicknameChange" <%= config.logging.nicknameChange ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>Voice Activity</label>
+                            <label class="toggle">
+                                <input type="checkbox" id="logging-voiceActivity" <%= config.logging.voiceActivity ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" onclick="saveLogging()">
+                        <i class="fas fa-save"></i>
+                        Save Logging Settings
+                    </button>
+                </section>
+
+                <!-- Welcome Messages Section -->
+                <section id="welcome-section" class="setting-section">
+                    <div class="setting-group">
+                        <h3>👋 Welcome Messages</h3>
+                        <p>Send messages when users join. Use {user} for user mention, {server} for server name</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Enable Welcome Messages</label>
+                            <small>Send welcome messages when users join</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="welcome-enabled" <%= config.welcome.enabled ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="welcome-channel">Welcome Channel</label>
+                        <select id="welcome-channel" style="padding: 0.875rem; background: rgba(15, 23, 42, 0.6); border: 2px solid var(--border); color: var(--text-primary); border-radius: 10px; font-size: 0.95rem;">
+                            <option value="">-- Select Channel --</option>
+                            <% channels.forEach(channel => { %>
+                                <option value="<%= channel.id %>" <%= config.welcome.channel === channel.id ? 'selected' : '' %>>
+                                    # <%= channel.name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="welcome-message">Welcome Message</label>
+                        <textarea id="welcome-message" rows="3"><%= config.welcome.message %></textarea>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Use Embed</label>
+                            <small>Display welcome message as an embed</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="welcome-embedEnabled" <%= config.welcome.embedEnabled ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="welcome-embedColor">Embed Color (Hex)</label>
+                        <input type="text" id="welcome-embedColor" value="<%= config.welcome.embedColor %>" placeholder="#5865F2" style="width: 150px;">
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>DM Welcome to User</label>
+                            <small>Send welcome message via DM</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="welcome-dmUser" <%= config.welcome.dmUser ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="welcome-dmMessage">DM Message</label>
+                        <textarea id="welcome-dmMessage" rows="3"><%= config.welcome.dmMessage %></textarea>
+                    </div>
+
+                    <button class="btn btn-success" onclick="saveWelcome()">
+                        <i class="fas fa-save"></i>
+                        Save Welcome Settings
+                    </button>
+                </section>
+
+                <!-- Leave Messages Section -->
+                <section id="leave-section" class="setting-section">
+                    <div class="setting-group">
+                        <h3>👋 Leave Messages</h3>
+                        <p>Send messages when users leave. Use {user} for username, {server} for server name</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Enable Leave Messages</label>
+                            <small>Send messages when users leave</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="leave-enabled" <%= config.leave.enabled ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="leave-channel">Leave Channel</label>
+                        <select id="leave-channel" style="padding: 0.875rem; background: rgba(15, 23, 42, 0.6); border: 2px solid var(--border); color: var(--text-primary); border-radius: 10px; font-size: 0.95rem;">
+                            <option value="">-- Select Channel --</option>
+                            <% channels.forEach(channel => { %>
+                                <option value="<%= channel.id %>" <%= config.leave.channel === channel.id ? 'selected' : '' %>>
+                                    # <%= channel.name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="leave-message">Leave Message</label>
+                        <textarea id="leave-message" rows="3"><%= config.leave.message %></textarea>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Use Embed</label>
+                            <small>Display leave message as an embed</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="leave-embedEnabled" <%= config.leave.embedEnabled ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="leave-embedColor">Embed Color (Hex)</label>
+                        <input type="text" id="leave-embedColor" value="<%= config.leave.embedColor %>" placeholder="#ED4245" style="width: 150px;">
+                    </div>
+
+                    <button class="btn btn-success" onclick="saveLeave()">
+                        <i class="fas fa-save"></i>
+                        Save Leave Settings
+                    </button>
+                </section>
+
+                <!-- Auto-Role Section -->
+                <section id="autorole-section" class="setting-section">
+                    <div class="setting-group">
+                        <h3>🎭 Auto-Role</h3>
+                        <p>Automatically assign roles when users join</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Enable Auto-Role</label>
+                            <small>Automatically assign roles on join</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="autorole-enabled" <%= config.autoRole.enabled ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="autorole-roles">Roles to Assign (select multiple)</label>
+                        <select id="autorole-roles" multiple style="padding: 0.875rem; background: rgba(15, 23, 42, 0.6); border: 2px solid var(--border); color: var(--text-primary); border-radius: 10px; font-size: 0.95rem; min-height: 150px;">
+                            <% roles.forEach(role => { %>
+                                <option value="<%= role.id %>" <%= config.autoRole.roles.includes(role.id) ? 'selected' : '' %>>
+                                    <%= role.name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                        <small>Hold Ctrl/Cmd to select multiple roles</small>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="autorole-botRoles">Bot Roles (select multiple)</label>
+                        <select id="autorole-botRoles" multiple style="padding: 0.875rem; background: rgba(15, 23, 42, 0.6); border: 2px solid var(--border); color: var(--text-primary); border-radius: 10px; font-size: 0.95rem; min-height: 150px;">
+                            <% roles.forEach(role => { %>
+                                <option value="<%= role.id %>" <%= config.autoRole.botRoles.includes(role.id) ? 'selected' : '' %>>
+                                    <%= role.name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                        <small>Roles assigned to bots only</small>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="autorole-verificationRole">Verification Role</label>
+                        <select id="autorole-verificationRole" style="padding: 0.875rem; background: rgba(15, 23, 42, 0.6); border: 2px solid var(--border); color: var(--text-primary); border-radius: 10px; font-size: 0.95rem;">
+                            <option value="">-- Select Role --</option>
+                            <% roles.forEach(role => { %>
+                                <option value="<%= role.id %>" <%= config.autoRole.verificationRole === role.id ? 'selected' : '' %>>
+                                    <%= role.name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                        <small>Role assigned before verification</small>
+                    </div>
+
+                    <button class="btn btn-success" onclick="saveAutoRole()">
+                        <i class="fas fa-save"></i>
+                        Save Auto-Role Settings
+                    </button>
+                </section>
+
+                <!-- Moderation Section -->
+                <section id="moderation-section" class="setting-section">
+                    <div class="setting-group">
+                        <h3>⚖️ Moderation Settings</h3>
+                        <p>Configure automatic moderation actions based on warnings</p>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Warning Thresholds</h3>
+                        <div class="setting-item">
+                            <label for="moderation-warnThresholdMute">Warnings for Auto-Mute</label>
+                            <input type="number" id="moderation-warnThresholdMute" value="<%= config.moderation.warnThresholdMute %>" min="0" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="moderation-warnThresholdKick">Warnings for Auto-Kick</label>
+                            <input type="number" id="moderation-warnThresholdKick" value="<%= config.moderation.warnThresholdKick %>" min="0" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="moderation-warnThresholdBan">Warnings for Auto-Ban</label>
+                            <input type="number" id="moderation-warnThresholdBan" value="<%= config.moderation.warnThresholdBan %>" min="0" style="width: 100px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="moderation-warnExpiry">Warning Expiry (ms)</label>
+                            <input type="number" id="moderation-warnExpiry" value="<%= config.moderation.warnExpiry %>" min="0" step="86400000" style="width: 150px;">
+                            <small>Default: 30 days (2592000000ms)</small>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="moderation-muteRole">Mute Role</label>
+                        <select id="moderation-muteRole" style="padding: 0.875rem; background: rgba(15, 23, 42, 0.6); border: 2px solid var(--border); color: var(--text-primary); border-radius: 10px; font-size: 0.95rem;">
+                            <option value="">-- Select Role --</option>
+                            <% roles.forEach(role => { %>
+                                <option value="<%= role.id %>" <%= config.moderation.muteRole === role.id ? 'selected' : '' %>>
+                                    <%= role.name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="moderation-modLogChannel">Mod Log Channel</label>
+                        <select id="moderation-modLogChannel" style="padding: 0.875rem; background: rgba(15, 23, 42, 0.6); border: 2px solid var(--border); color: var(--text-primary); border-radius: 10px; font-size: 0.95rem;">
+                            <option value="">-- Select Channel --</option>
+                            <% channels.forEach(channel => { %>
+                                <option value="<%= channel.id %>" <%= config.moderation.modLogChannel === channel.id ? 'selected' : '' %>>
+                                    # <%= channel.name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-success" onclick="saveModeration()">
+                        <i class="fas fa-save"></i>
+                        Save Moderation Settings
+                    </button>
+                </section>
+
+                <!-- Security Section -->
+                <section id="security-section" class="setting-section">
+                    <div class="setting-group">
+                        <h3>🔒 Security & Raid Protection</h3>
+                        <p>Advanced security measures to protect your server</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="security-minAccountAge">Minimum Account Age (days)</label>
+                        <input type="number" id="security-minAccountAge" value="<%= config.security.minAccountAge %>" min="0" style="width: 100px;">
+                        <small>Kick users with accounts younger than this</small>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <label>Raid Mode</label>
+                            <small>Emergency mode - blocks all new joins</small>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="security-raidMode" <%= config.security.raidMode ? 'checked' : '' %>>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Anti-Raid Protection</h3>
+                        <div class="setting-item">
+                            <div>
+                                <label>Enable Anti-Raid</label>
+                                <small>Automatically detect and stop raids</small>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" id="security-antiRaid-enabled" <%= config.security.antiRaid.enabled ? 'checked' : '' %>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label for="security-antiRaid-joinThreshold">Join Threshold</label>
+                            <input type="number" id="security-antiRaid-joinThreshold" value="<%= config.security.antiRaid.joinThreshold %>" min="1" style="width: 100px;">
+                            <small>Number of joins to trigger anti-raid</small>
+                        </div>
+                        <div class="setting-item">
+                            <label for="security-antiRaid-joinTimeWindow">Time Window (ms)</label>
+                            <input type="number" id="security-antiRaid-joinTimeWindow" value="<%= config.security.antiRaid.joinTimeWindow %>" min="1000" step="1000" style="width: 120px;">
+                        </div>
+                        <div class="setting-item">
+                            <label for="security-antiRaid-action">Action</label>
+                            <select id="security-antiRaid-action" style="padding: 0.5rem; background: var(--bg-darker); border: 2px solid var(--border); color: var(--text-light); border-radius: 5px;">
+                                <option value="kick" <%= config.security.antiRaid.action === 'kick' ? 'selected' : '' %>>Kick</option>
+                                <option value="ban" <%= config.security.antiRaid.action === 'ban' ? 'selected' : '' %>>Ban</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="security-verificationLevel">Verification Level</label>
+                        <select id="security-verificationLevel" style="padding: 0.5rem; background: var(--bg-darker); border: 2px solid var(--border); color: var(--text-light); border-radius: 5px;">
+                            <option value="none" <%= config.security.verificationLevel === 'none' ? 'selected' : '' %>>None</option>
+                            <option value="low" <%= config.security.verificationLevel === 'low' ? 'selected' : '' %>>Low</option>
+                            <option value="medium" <%= config.security.verificationLevel === 'medium' ? 'selected' : '' %>>Medium</option>
+                            <option value="high" <%= config.security.verificationLevel === 'high' ? 'selected' : '' %>>High</option>
+                            <option value="highest" <%= config.security.verificationLevel === 'highest' ? 'selected' : '' %>>Highest</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-success" onclick="saveSecurity()">
+                        <i class="fas fa-save"></i>
+                        Save Security Settings
+                    </button>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+    <script>
+        const guildId = '<%= guild.id %>';
+        const presets = {
+            'profanity-basic': ['*fuck*', '*shit*', '*ass*', '*bitch*', '*damn*', '*crap*'],
+            'profanity-strict': ['*fuck*', '*shit*', '*ass*', '*bitch*', '*damn*', '*crap*', '*bastard*', '*piss*', '*dick*', '*cock*', '*pussy*', '*whore*', '*slut*'],
+            'slurs': ['*nigger*', '*nigga*', '*faggot*', '*fag*', '*retard*', '*tranny*', '*kike*', '*chink*', '*spic*', '*wetback*'],
+            'spam': ['*free nitro*', '*discord.gift*', '*@everyone*', '*win prize*', '*click here*', '*dm me*']
+        };
+    </script>
+</body>
+</html>
