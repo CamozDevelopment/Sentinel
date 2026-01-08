@@ -147,18 +147,18 @@
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <div class="text-center p-4 bg-red-500/10 border border-red-500/30 rounded-xl">
-                        <div class="text-4xl font-black text-red-500 mb-2"><%= globalBans.length %></div>
+                        <div class="text-4xl font-black text-red-500 mb-2"><%= Array.isArray(globalBans) ? globalBans.length : 0 %></div>
                         <div class="text-sm text-gray-400 font-semibold">Total Global Bans</div>
                     </div>
                     <div class="text-center p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
                         <div class="text-4xl font-black text-yellow-500 mb-2">
-                            <%= globalBans.filter(b => b.appeals && b.appeals.length > 0).length %>
+                            <%= Array.isArray(globalBans) ? globalBans.filter(b => b.appeals && b.appeals.length > 0).length : 0 %>
                         </div>
                         <div class="text-sm text-gray-400 font-semibold">Pending Appeals</div>
                     </div>
                     <div class="text-center p-4 bg-green-500/10 border border-green-500/30 rounded-xl">
                         <div class="text-4xl font-black text-green-500 mb-2">
-                            <%= Math.round((globalBans.length / stats.totalGuilds) * 100) %>%
+                            <%= Array.isArray(globalBans) && stats.totalGuilds > 0 ? Math.round((globalBans.length / stats.totalGuilds) * 100) : 0 %>%
                         </div>
                         <div class="text-sm text-gray-400 font-semibold">Protection Rate</div>
                     </div>

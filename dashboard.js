@@ -181,8 +181,17 @@ app.get('/owner', checkOwner, async (req, res) => {
         let globalBans = [];
         try {
             const globalBansData = fs.readFileSync('./globalBans.json', 'utf8');
-            globalBans = JSON.parse(globalBansData);
+            const parsed = JSON.parse(globalBansData);
+            // Ensure it's an array - if it's an object with bans array, extract it
+            if (Array.isArray(parsed)) {
+                globalBans = parsed;
+            } else if (parsed && Array.isArray(parsed.bans)) {
+                globalBans = parsed.bans;
+            } else {
+                globalBans = [];
+            }
         } catch (e) {
+            console.log('Global bans file not found or invalid, using empty array');
             globalBans = [];
         }
 
@@ -190,7 +199,7 @@ app.get('/owner', checkOwner, async (req, res) => {
             user: req.user,
             stats,
             guilds: guilds.sort((a, b) => b.memberCount - a.memberCount),
-            globalBans
+            globalBans: Array.isArray(globalBans) ? globalBans : []
         });
     } catch (error) {
         console.error('Owner panel error:', error);
