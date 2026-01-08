@@ -5,12 +5,361 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sentinel - Elite Discord Security & Moderation Bot</title>
     <meta name="description" content="Enterprise-grade Discord security with anti-nuke, auto-mod, anti-spam, and powerful moderation tools. Manage everything from a stunning web dashboard.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="/css/style.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5865f2',
+                        secondary: '#7289da',
+                        accent: '#eb459e',
+                        dark: '#0a0e27',
+                        'dark-alt': '#0f1629',
+                        surface: '#1a1f3a'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(0, -20px); }
+        }
+        @keyframes gradient {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .animate-gradient {
+            animation: gradient 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-dark via-dark-alt to-surface text-white overflow-x-hidden">
+    <!-- Animated Background -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 -left-40 w-96 h-96 bg-primary rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-gradient"></div>
+        <div class="absolute bottom-0 -right-40 w-96 h-96 bg-accent rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-gradient" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/2 w-96 h-96 bg-secondary rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-gradient" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 bg-dark/80 backdrop-blur-xl border-b border-primary/20">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="/" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg shadow-primary/40 group-hover:shadow-primary/60 transition-all group-hover:scale-105">
+                        <i class="fas fa-shield-halved text-xl"></i>
+                    </div>
+                    <span class="text-2xl font-black tracking-tight">Sentinel</span>
+                </a>
+                <div class="flex items-center gap-8">
+                    <a href="/commands" class="text-gray-300 hover:text-white font-semibold transition-colors hidden md:block">Commands</a>
+                    <a href="/docs" class="text-gray-300 hover:text-white font-semibold transition-colors hidden md:block">Docs</a>
+                    <% if (user) { %>
+                        <a href="/dashboard" class="px-6 py-2.5 bg-gradient-to-r from-primary to-secondary rounded-xl font-bold hover:shadow-lg hover:shadow-primary/50 transition-all hover:scale-105">
+                            <i class="fas fa-gauge-high mr-2"></i>Dashboard
+                        </a>
+                    <% } else { %>
+                        <a href="/login" class="px-6 py-2.5 bg-gradient-to-r from-primary to-secondary rounded-xl font-bold hover:shadow-lg hover:shadow-primary/50 transition-all hover:scale-105">
+                            <i class="fab fa-discord mr-2"></i>Login
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center px-6 pt-20">
+        <div class="max-w-6xl w-full mx-auto text-center relative z-10">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-6 py-3 bg-primary/10 border border-primary/30 rounded-full text-primary font-bold text-sm uppercase tracking-wide mb-8 backdrop-blur-sm animate-float">
+                <i class="fas fa-shield-halved"></i>
+                <span>Enterprise Discord Security</span>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="text-6xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight">
+                <span class="bg-gradient-to-r from-white via-primary to-accent bg-clip-text text-transparent">
+                    Protect Your Discord Community with Sentinel
+                </span>
+            </h1>
+
+            <!-- Description -->
+            <p class="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+                Enterprise-grade security & moderation powered by advanced AI. Features anti-nuke protection, 
+                intelligent auto-moderation, spam detection, and a stunning web dashboard. Everything you need to keep your server safe.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-4 mb-16">
+                <% if (user) { %>
+                    <a href="/dashboard" class="px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-primary/50 transition-all hover:scale-105">
+                        <i class="fas fa-gauge-high mr-2"></i>Open Dashboard
+                    </a>
+                <% } else { %>
+                    <a href="/login" class="px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-primary/50 transition-all hover:scale-105">
+                        <i class="fab fa-discord mr-2"></i>Get Started Free
+                    </a>
+                <% } %>
+                <a href="https://discord.com/api/oauth2/authorize?client_id=1457723088627175435&permissions=8&scope=bot%20applications.commands" target="_blank" class="px-8 py-4 bg-white/5 border-2 border-white/20 rounded-xl font-bold text-lg hover:bg-white/10 hover:border-white/40 transition-all hover:scale-105">
+                    <i class="fas fa-plus mr-2"></i>Add to Server
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+                <div class="text-center">
+                    <div class="text-5xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">99.9%</div>
+                    <div class="text-sm text-gray-400 font-semibold uppercase tracking-wider">Uptime</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">&lt;50ms</div>
+                    <div class="text-sm text-gray-400 font-semibold uppercase tracking-wider">Response Time</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">24/7</div>
+                    <div class="text-sm text-gray-400 font-semibold uppercase tracking-wider">Protection</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="relative py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <!-- Section Header -->
+            <div class="text-center mb-16">
+                <div class="inline-block px-6 py-2 bg-primary/10 border border-primary/30 rounded-full text-primary font-bold text-sm uppercase tracking-wide mb-6">Powerful Features</div>
+                <h2 class="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-white to-primary bg-clip-text text-transparent">
+                    Everything You Need to Secure Your Server
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Comprehensive moderation tools, advanced security systems, and beautiful management dashboard - all in one powerful bot
+                </p>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feature Card 1 -->
+                <div class="group bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-8 hover:border-primary hover:shadow-2xl hover:shadow-primary/20 transition-all hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-primary/40 group-hover:shadow-primary/60 group-hover:scale-110 transition-all">
+                        <i class="fas fa-robot text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Smart Auto-Moderation</h3>
+                    <p class="text-gray-300 mb-4">Intelligent content filtering with machine learning-powered detection for spam, toxicity, and inappropriate content.</p>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Wildcard pattern matching</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Zalgo text detection</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Emoji spam prevention</li>
+                    </ul>
+                </div>
+
+                <!-- Feature Card 2 -->
+                <div class="group bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-8 hover:border-primary hover:shadow-2xl hover:shadow-primary/20 transition-all hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-primary/40 group-hover:shadow-primary/60 group-hover:scale-110 transition-all">
+                        <i class="fas fa-bomb text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Anti-Nuke Protection</h3>
+                    <p class="text-gray-300 mb-4">Real-time detection and prevention of malicious server attacks with instant response and rollback capabilities.</p>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Channel deletion monitoring</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Mass ban detection</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Instant punishment</li>
+                    </ul>
+                </div>
+
+                <!-- Feature Card 3 -->
+                <div class="group bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-8 hover:border-primary hover:shadow-2xl hover:shadow-primary/20 transition-all hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-primary/40 group-hover:shadow-primary/60 group-hover:scale-110 transition-all">
+                        <i class="fas fa-shield-virus text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Anti-Spam System</h3>
+                    <p class="text-gray-300 mb-4">Advanced spam detection monitoring duplicate messages, images, and rapid posting with automatic enforcement.</p>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Duplicate detection</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Rate limit enforcement</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Smart timeouts</li>
+                    </ul>
+                </div>
+
+                <!-- Feature Card 4 -->
+                <div class="group bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-8 hover:border-primary hover:shadow-2xl hover:shadow-primary/20 transition-all hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-primary/40 group-hover:shadow-primary/60 group-hover:scale-110 transition-all">
+                        <i class="fas fa-globe text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Global Ban Network</h3>
+                    <p class="text-gray-300 mb-4">Cross-server ban synchronization to protect your community from known troublemakers across Discord.</p>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Cross-server bans</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Appeal system</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Ban evidence tracking</li>
+                    </ul>
+                </div>
+
+                <!-- Feature Card 5 -->
+                <div class="group bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-8 hover:border-primary hover:shadow-2xl hover:shadow-primary/20 transition-all hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-primary/40 group-hover:shadow-primary/60 group-hover:scale-110 transition-all">
+                        <i class="fas fa-scroll text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Comprehensive Logging</h3>
+                    <p class="text-gray-300 mb-4">Full audit trail of all server activity with detailed logs for messages, members, roles, and moderation actions.</p>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Message logs</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Member tracking</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Role monitoring</li>
+                    </ul>
+                </div>
+
+                <!-- Feature Card 6 -->
+                <div class="group bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-8 hover:border-primary hover:shadow-2xl hover:shadow-primary/20 transition-all hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-primary/40 group-hover:shadow-primary/60 group-hover:scale-110 transition-all">
+                        <i class="fas fa-paint-brush text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Web Dashboard</h3>
+                    <p class="text-gray-300 mb-4">Beautiful, modern web interface with Discord OAuth2, real-time updates, and intuitive configuration management.</p>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Discord OAuth2 login</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Real-time config</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> Mobile responsive</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Showcase -->
+    <section class="relative py-24 px-6 bg-surface/30">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-5xl font-black mb-6 bg-gradient-to-r from-white to-primary bg-clip-text text-transparent">
+                        Stunning Web Dashboard
+                    </h2>
+                    <p class="text-xl text-gray-300 mb-8">
+                        Manage every aspect of your server security from one beautiful, intuitive interface. 
+                        Configure settings, review logs, and moderate your community without typing a single command.
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start gap-4">
+                            <i class="fas fa-bolt text-primary text-xl mt-1"></i>
+                            <div>
+                                <div class="font-bold mb-1">Real-time Updates</div>
+                                <div class="text-gray-400">See configuration changes instantly without bot restarts</div>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="fas fa-palette text-primary text-xl mt-1"></i>
+                            <div>
+                                <div class="font-bold mb-1">Modern UI</div>
+                                <div class="text-gray-400">Glass morphism design with smooth animations and transitions</div>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="fas fa-droplet text-primary text-xl mt-1"></i>
+                            <div>
+                                <div class="font-bold mb-1">Easy Dropdowns</div>
+                                <div class="text-gray-400">Select roles and channels visually - no more copying IDs</div>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i class="fas fa-mobile-screen-button text-primary text-xl mt-1"></i>
+                            <div>
+                                <div class="font-bold mb-1">Mobile Friendly</div>
+                                <div class="text-gray-400">Fully responsive design works perfectly on any device</div>
+                            </div>
+                        </li>
+                    </ul>
+                    <% if (!user) { %>
+                        <a href="/login" class="inline-block px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-primary/50 transition-all hover:scale-105">
+                            <i class="fas fa-gauge-high mr-2"></i>Access Dashboard
+                        </a>
+                    <% } %>
+                </div>
+                <div class="bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30 rounded-3xl p-12 aspect-video flex items-center justify-center backdrop-blur-xl">
+                    <i class="fas fa-desktop text-9xl text-primary/30"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="relative py-24 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="bg-gradient-to-r from-primary to-accent rounded-3xl p-12 md:p-16 text-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-50"></div>
+                <div class="relative z-10">
+                    <h2 class="text-5xl font-black mb-6">Ready to Secure Your Discord Server?</h2>
+                    <p class="text-xl mb-10 opacity-95">Join thousands of communities protected by Sentinel's enterprise security</p>
+                    <div class="flex flex-wrap items-center justify-center gap-4">
+                        <a href="https://discord.com/api/oauth2/authorize?client_id=1457723088627175435&permissions=8&scope=bot%20applications.commands" target="_blank" class="px-8 py-4 bg-white text-primary rounded-xl font-bold text-lg hover:shadow-2xl transition-all hover:scale-105">
+                            <i class="fas fa-plus mr-2"></i>Add to Discord
+                        </a>
+                        <% if (!user) { %>
+                            <a href="/login" class="px-8 py-4 bg-white/10 border-2 border-white/30 rounded-xl font-bold text-lg hover:bg-white/20 transition-all hover:scale-105">
+                                <i class="fab fa-discord mr-2"></i>Login with Discord
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative py-12 px-6 border-t border-primary/20 bg-dark/50 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-wrap justify-center gap-8 mb-6 text-sm">
+                <a href="/" class="text-gray-400 hover:text-white transition-colors">Home</a>
+                <a href="/commands" class="text-gray-400 hover:text-white transition-colors">Commands</a>
+                <a href="/docs" class="text-gray-400 hover:text-white transition-colors">Docs</a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">Support</a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy</a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">Terms</a>
+            </div>
+            <div class="text-center text-gray-500 text-sm">
+                © 2026 Sentinel Bot. All rights reserved. Made with <i class="fas fa-heart text-accent"></i> for Discord communities.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top -->
+    <button id="scrollTop" class="fixed bottom-8 right-8 w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center shadow-lg hover:shadow-2xl hover:shadow-primary/50 transition-all hover:scale-110 opacity-0 pointer-events-none" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Scroll to top button
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scrollTop');
+            if (window.scrollY > 500) {
+                btn.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                btn.classList.add('opacity-0', 'pointer-events-none');
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    document.querySelector(href)?.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
         * {
             margin: 0;
             padding: 0;
