@@ -1,9 +1,51 @@
+# Dependencies
 node_modules/
+package-lock.json
+
+# Environment Variables & Secrets
 .env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Configuration (contains sensitive data)
 config.json
+
+# Data & Storage
 data/
 servers/
+globalBans.json
+*.db
+*.sqlite
+
+# Logs
 *.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Files
 .DS_Store
+Thumbs.db
 *.swp
 *.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Backups
+*.backup
+*.bak
+dashboard.js.backup
+server.ejs.backup
+style.css.backup
+
+# Temporary
+tmp/
+temp/
+.cache/

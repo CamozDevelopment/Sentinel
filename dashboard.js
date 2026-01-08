@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const serverConfig = require('./utils/serverConfig');
-const { Client, GatewayIntentBits } = require('discord.js');
 
 // Load config from environment variables or fallback to config.json
 let config;
@@ -35,14 +34,6 @@ console.log(`   Client ID: ${DASHBOARD_CONFIG.clientId}`);
 console.log(`   Client Secret: ${DASHBOARD_CONFIG.clientSecret ? '***' + DASHBOARD_CONFIG.clientSecret.slice(-4) : 'NOT SET'}`);
 console.log(`   Callback URL: ${DASHBOARD_CONFIG.callbackURL}`);
 console.log(`   Session Secret: ${DASHBOARD_CONFIG.sessionSecret ? 'SET' : 'NOT SET'}`);
-
-// Setup Discord client (read-only for dashboard)
-const client = new Client({ 
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers
-    ] 
-});
 
 // Middleware
 app.use(bodyParser.json());
@@ -118,11 +109,10 @@ app.get('/dashboard', checkAuth, async (req, res) => {
         // Get guilds the user is in
         const userGuilds = req.user.guilds || [];
         
-        // Filter guilds where bot is also in and user has manage server permission
+        // Filter guilds where user has manage server permission
         const manageable = userGuilds.filter(guild => {
             const hasPermission = (guild.permissions & 0x20) === 0x20; // MANAGE_GUILD
-            const botGuild = client.guilds.cache.get(guild.id);
-            return hasPermission && botGuild;
+            return hasPermission;
         });
 
         res.render('dashboard', { 
@@ -139,11 +129,6 @@ app.get('/dashboard', checkAuth, async (req, res) => {
 app.get('/dashboard/:guildId', checkAuth, async (req, res) => {
     try {
         const { guildId } = req.params;
-        const guild = client.guilds.cache.get(guildId);
-        
-        if (!guild) {
-            return res.status(404).send('Server not found or bot not in server');
-        }
 
         // Check if user has permission
         const userGuilds = req.user.guilds || [];
@@ -153,39 +138,19 @@ app.get('/dashboard/:guildId', checkAuth, async (req, res) => {
         }
 
         // Load server config
-        const serverCfg = serverConfig.loadServerConfig(guildId, guild.name);
-
-        // Fetch guild roles and channels
-        const roles = guild.roles.cache
-            .filter(role => role.id !== guild.id) // Exclude @everyone
-            .sort((a, b) => b.position - a.position)
-            .map(role => ({
-                id: role.id,
-                name: role.name,
-                color: role.hexColor,
-                position: role.position
-            }));
-
-        const channels = guild.channels.cache
-            .filter(channel => channel.type === 0) // Text channels only
-            .sort((a, b) => a.position - b.position)
-            .map(channel => ({
-                id: channel.id,
-                name: channel.name,
-                type: channel.type
-            }));
+        const serverCfg = serverConfig.loadServerConfig(guildId, userGuild.name);
 
         res.render('server', {
             user: req.user,
             guild: {
-                id: guild.id,
-                name: guild.name,
-                icon: guild.iconURL(),
-                memberCount: guild.memberCount
+                id: userGuild.id,
+                name: userGuild.name,
+                icon: userGuild.icon ? `https://cdn.discordapp.com/icons/${userGuild.id}/${userGuild.icon}.png` : null,
+                memberCount: null // Not available without bot client
             },
             config: serverCfg,
-            roles: roles,
-            channels: channels
+            roles: [], // Will be loaded via API if needed
+            channels: [] // Will be loaded via API if needed
         });
     } catch (error) {
         console.error('Server page error:', error);
@@ -199,13 +164,14 @@ app.get('/dashboard/:guildId', checkAuth, async (req, res) => {
 app.get('/api/server/:guildId/config', checkAuth, async (req, res) => {
     try {
         const { guildId } = req.params;
-        const guild = client.guilds.cache.get(guildId);
+        const userGuilds = req.user.guilds || [];
+        const userGuild = userGuilds.find(g => g.id === guildId);
         
-        if (!guild) {
+        if (!userGuild) {
             return res.status(404).json({ error: 'Server not found' });
         }
 
-        const serverCfg = serverConfig.loadServerConfig(guildId, guild.name);
+        const serverCfg = serverConfig.loadServerConfig(guildId, userGuild.name);
         res.json(serverCfg);
     } catch (error) {
         console.error('Get config error:', error);
@@ -219,12 +185,13 @@ app.post('/api/server/:guildId/settings', checkAuth, async (req, res) => {
         const { guildId } = req.params;
         const { setting, value } = req.body;
         
-        const guild = client.guilds.cache.get(guildId);
-        if (!guild) {
+        const userGuilds = req.user.guilds || [];
+        const userGuild = userGuilds.find(g => g.id === guildId);
+        if (!userGuild) {
             return res.status(404).json({ error: 'Server not found' });
         }
 
-        const serverCfg = serverConfig.loadServerConfig(guildId, guild.name);
+        const serverCfg = serverConfig.loadServerConfig(guildId, userGuild.name);
 
         // Update the setting based on path
         const keys = setting.split('.');
@@ -310,9 +277,10 @@ app.post('/api/server/:guildId/blockedwords/bulk', checkAuth, async (req, res) =
 app.delete('/api/server/:guildId/blockedwords/clear', checkAuth, async (req, res) => {
     try {
         const { guildId } = req.params;
-        const guild = client.guilds.cache.get(guildId);
+        const userGuilds = req.user.guilds || [];
+        const userGuild = userGuilds.find(g => g.id === guildId);
         
-        const cfg = serverConfig.loadServerConfig(guildId, guild?.name);
+        const cfg = serverConfig.loadServerConfig(guildId, userGuild?.name);
         cfg.autoMod.blockedWords = [];
         serverConfig.saveServerConfig(guildId, cfg);
         
@@ -322,13 +290,9 @@ app.delete('/api/server/:guildId/blockedwords/clear', checkAuth, async (req, res
     }
 });
 
-// Start bot client
-client.login(config.token).then(() => {
-    console.log('✅ Bot client connected for dashboard');
-    
-    // Start web server after bot is ready (listen on all interfaces)
-    app.listen(PORT, '0.0.0.0', () => {
-        console.log(`🌐 Dashboard running at http://0.0.0.0:${PORT}`);
-        console.log(`📝 Access at http://vmi3007350.contaboserver.net:${PORT}`);
-    });
+// Start web server (no bot client needed)
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🌐 Dashboard running at http://0.0.0.0:${PORT}`);
+    console.log(`📝 Access at http://vmi3007350.contaboserver.net:${PORT}`);
+    console.log('ℹ️  Dashboard runs independently - make sure your main bot (index.js) is also running');
 });

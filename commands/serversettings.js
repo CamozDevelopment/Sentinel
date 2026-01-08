@@ -80,7 +80,7 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
 
     async executeSlash(interaction, client, config) {
-        if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
+        if (!interaction.memberPermissions.has(PermissionFlagsBits.ManageGuild)) {
             return interaction.reply({ content: '❌ You need Manage Server permission!', ephemeral: true });
         }
 

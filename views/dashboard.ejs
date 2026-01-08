@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Selection - Sentinel</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>Server Selection - Sentinel Dashboard</title>
+    <link rel="stylesheet" href="/css/style-enhanced.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
 </head>
 <body>
     <div class="content-wrapper">
@@ -13,10 +14,22 @@
             <a href="/" class="logo">
                 <i class="fas fa-shield-halved"></i>
                 Sentinel
+                <span class="badge">Dashboard</span>
             </a>
+            <div class="nav-center">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="server-search" placeholder="Search your servers..." oninput="filterServers(this.value)">
+                </div>
+            </div>
             <div class="user-info">
-                <img src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png" alt="Avatar" class="avatar">
-                <span class="username"><%= user.username %></span>
+                <div class="user-badge">
+                    <img src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png" alt="Avatar" class="avatar">
+                    <div class="user-details">
+                        <span class="username"><%= user.username %></span>
+                        <span class="user-tag">Administrator</span>
+                    </div>
+                </div>
                 <a href="/logout" class="btn btn-secondary">
                     <i class="fas fa-right-from-bracket"></i>
                     Logout
@@ -26,41 +39,190 @@
 
         <div class="container">
             <div class="page-header">
-                <h1><i class="fas fa-server"></i> Select a Server</h1>
-                <p>Choose a server to configure its protection settings</p>
+                <div class="header-content">
+                    <div>
+                        <h1><i class="fas fa-server"></i> Your Servers</h1>
+                        <p>Manage security, moderation & settings for your Discord servers</p>
+                    </div>
+                    <div class="header-stats">
+                        <div class="stat-badge">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <span class="stat-number"><%= guilds.length %></span>
+                                <span class="stat-label">Servers</span>
+                            </div>
+                        </div>
+                        <div class="stat-badge">
+                            <i class="fas fa-bolt"></i>
+                            <div>
+                                <span class="stat-number">Active</span>
+                                <span class="stat-label">Protection</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <% if (guilds.length === 0) { %>
-                <div style="text-align: center; padding: 5rem 2rem; background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid var(--border);">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--warning); margin-bottom: 1.5rem;"></i>
-                    <h2 style="margin-bottom: 1rem; color: var(--text-secondary);">No servers found</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Make sure the bot is invited to your server and you have Manage Server permission.</p>
-                    <a href="https://discord.com/api/oauth2/authorize?client_id=<%= process.env.CLIENT_ID || '1457723088627175435' %>&permissions=8&scope=bot%20applications.commands" target="_blank" class="btn btn-primary">
-                        <i class="fas fa-plus"></i>
-                        Invite Bot to Your Server
-                    </a>
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h2>No Servers Found</h2>
+                    <p>Looks like Sentinel isn't in any of your servers yet, or you don't have "Manage Server" permission.</p>
+                    <div class="empty-actions">
+                        <a href="https://discord.com/api/oauth2/authorize?client_id=<%= process.env.CLIENT_ID || '1457723088627175435' %>&permissions=8&scope=bot%20applications.commands" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Invite Sentinel to Server
+                        </a>
+                        <a href="https://discord.gg/support" target="_blank" class="btn btn-secondary">
+                            <i class="fas fa-question-circle"></i>
+                            Get Help
+                        </a>
+                    </div>
                 </div>
             <% } else { %>
-                <div class="server-grid">
-                    <% guilds.forEach(guild => { %>
-                        <a href="/dashboard/<%= guild.id %>" class="server-card">
-                            <div class="server-icon">
-                                <% if (guild.icon) { %>
-                                    <img src="https://cdn.discordapp.com/icons/<%= guild.id %>/<%= guild.icon %>.png" alt="<%= guild.name %>">
-                                <% } else { %>
-                                    <%= guild.name.charAt(0) %>
-                                <% } %>
+                <div class="server-filter-bar">
+                    <div class="filter-group">
+                        <button class="filter-btn active" onclick="filterByCategory('all')">
+                            <i class="fas fa-th"></i>
+                            All Servers (<%= guilds.length %>)
+                        </button>
+                        <button class="filter-btn" onclick="filterByCategory('protected')">
+                            <i class="fas fa-shield-alt"></i>
+                            Protected
+                        </button>
+                        <button class="filter-btn" onclick="filterByCategory('recent')">
+                            <i class="fas fa-clock"></i>
+                            Recently Accessed
+                        </button>
+                    </div>
+                    <div class="view-toggle">
+                        <button class="view-btn active" onclick="setView('grid')">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                        <button class="view-btn" onclick="setView('list')">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="server-grid" id="server-grid">
+                    <% guilds.forEach((guild, index) => { %>
+                        <a href="/dashboard/<%= guild.id %>" class="server-card" data-guild-name="<%= guild.name.toLowerCase() %>" style="animation-delay: <%= index * 0.05 %>s">
+                            <div class="server-header">
+                                <div class="server-icon">
+                                    <% if (guild.icon) { %>
+                                        <img src="https://cdn.discordapp.com/icons/<%= guild.id %>/<%= guild.icon %>.png" alt="<%= guild.name %>">
+                                    <% } else { %>
+                                        <div class="server-initial"><%= guild.name.charAt(0) %></div>
+                                    <% } %>
+                                    <div class="server-badge">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                                <div class="server-actions">
+                                    <button class="action-btn" onclick="event.preventDefault(); quickAction('<%= guild.id %>', 'settings')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="server-name"><%= guild.name %></div>
-                            <div class="server-members">
-                                <i class="fas fa-users"></i>
-                                Click to configure
+                            <div class="server-body">
+                                <h3 class="server-name"><%= guild.name %></h3>
+                                <div class="server-info">
+                                    <span class="info-item">
+                                        <i class="fas fa-shield-alt"></i>
+                                        Protection Active
+                                    </span>
+                                    <span class="info-item">
+                                        <i class="fas fa-crown"></i>
+                                        Admin Access
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="server-footer">
+                                <button class="server-btn" onclick="location.href='/dashboard/<%= guild.id %>'">
+                                    <i class="fas fa-sliders-h"></i>
+                                    Configure
+                                </button>
+                                <div class="server-status">
+                                    <span class="status-dot online"></span>
+                                    Online
+                                </div>
                             </div>
                         </a>
                     <% }); %>
                 </div>
             <% } %>
         </div>
+
+        <!-- Quick Actions Panel -->
+        <div class="quick-panel" id="quick-panel">
+            <div class="quick-panel-header">
+                <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                <button onclick="closeQuickPanel()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="quick-panel-body">
+                <button class="quick-action-btn">
+                    <i class="fas fa-shield-alt"></i>
+                    Enable Protection
+                </button>
+                <button class="quick-action-btn">
+                    <i class="fas fa-ban"></i>
+                    Block Invites
+                </button>
+                <button class="quick-action-btn">
+                    <i class="fas fa-robot"></i>
+                    Auto-Moderation
+                </button>
+                <button class="quick-action-btn">
+                    <i class="fas fa-bell"></i>
+                    Configure Alerts
+                </button>
+            </div>
+        </div>
     </div>
+
+    <script>
+        function filterServers(query) {
+            const cards = document.querySelectorAll('.server-card');
+            query = query.toLowerCase();
+            
+            cards.forEach(card => {
+                const name = card.dataset.guildName;
+                if (name.includes(query)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function filterByCategory(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.filter-btn').classList.add('active');
+            // Implement category filtering logic
+        }
+
+        function setView(viewType) {
+            const grid = document.getElementById('server-grid');
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.view-btn').classList.add('active');
+            
+            if (viewType === 'list') {
+                grid.classList.add('list-view');
+            } else {
+                grid.classList.remove('list-view');
+            }
+        }
+
+        function quickAction(guildId, action) {
+            document.getElementById('quick-panel').classList.add('active');
+        }
+
+        function closeQuickPanel() {
+            document.getElementById('quick-panel').classList.remove('active');
+        }
+    </script>
 </body>
 </html>
