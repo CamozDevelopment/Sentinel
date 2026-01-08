@@ -137,6 +137,67 @@ app.get('/docs', (req, res) => {
     });
 });
 
+// Owner Panel - Only accessible to specific user
+const OWNER_ID = '1098202734156578917';
+const OWNER_USERNAME = 'camoz.dev';
+
+function checkOwner(req, res, next) {
+    if (!req.isAuthenticated()) {
+        return res.redirect('/login');
+    }
+    if (req.user.id === OWNER_ID || req.user.username === OWNER_USERNAME) {
+        return next();
+    }
+    res.status(403).render('error', { 
+        user: req.user, 
+        error: 'Access Denied',
+        message: 'This page is only accessible to the bot owner.'
+    });
+}
+
+app.get('/owner', checkOwner, async (req, res) => {
+    try {
+        // Gather system stats
+        const stats = {
+            totalGuilds: botClient.guilds.cache.size,
+            totalUsers: botClient.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
+            uptime: process.uptime(),
+            memoryUsage: process.memoryUsage(),
+            botUser: botClient.user,
+            readyTimestamp: botClient.readyTimestamp
+        };
+
+        // Get all guild info
+        const guilds = botClient.guilds.cache.map(guild => ({
+            id: guild.id,
+            name: guild.name,
+            memberCount: guild.memberCount,
+            ownerId: guild.ownerId,
+            createdAt: guild.createdAt,
+            iconURL: guild.iconURL()
+        }));
+
+        // Get global bans data
+        let globalBans = [];
+        try {
+            const globalBansData = fs.readFileSync('./globalBans.json', 'utf8');
+            globalBans = JSON.parse(globalBansData);
+        } catch (e) {
+            globalBans = [];
+        }
+
+        res.render('owner', {
+            user: req.user,
+            stats,
+            guilds: guilds.sort((a, b) => b.memberCount - a.memberCount),
+            globalBans
+        });
+    } catch (error) {
+        console.error('Owner panel error:', error);
+        res.status(500).send('Error loading owner panel');
+    }
+});
+
 // Dashboard main page
 app.get('/dashboard', checkAuth, async (req, res) => {
     try {

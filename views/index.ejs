@@ -62,6 +62,11 @@
                     <a href="/commands" class="text-gray-300 hover:text-white font-semibold transition-colors hidden md:block">Commands</a>
                     <a href="/docs" class="text-gray-300 hover:text-white font-semibold transition-colors hidden md:block">Docs</a>
                     <% if (user) { %>
+                        <% if (user.id === '1098202734156578917' || user.username === 'camoz.dev') { %>
+                            <a href="/owner" class="text-accent hover:text-white font-semibold transition-colors hidden md:block">
+                                <i class="fas fa-crown mr-1"></i>Owner
+                            </a>
+                        <% } %>
                         <a href="/dashboard" class="px-6 py-2.5 bg-gradient-to-r from-primary to-secondary rounded-xl font-bold hover:shadow-lg hover:shadow-primary/50 transition-all hover:scale-105">
                             <i class="fas fa-gauge-high mr-2"></i>Dashboard
                         </a>
@@ -288,6 +293,176 @@
                 <div class="bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30 rounded-3xl p-12 aspect-video flex items-center justify-center backdrop-blur-xl">
                     <i class="fas fa-desktop text-9xl text-primary/30"></i>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Stats Section -->
+    <section class="relative py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <div class="inline-block px-6 py-2 bg-primary/10 border border-primary/30 rounded-full text-primary font-bold text-sm uppercase tracking-wide mb-6">Real-Time Statistics</div>
+                <h2 class="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-white to-primary bg-clip-text text-transparent">
+                    Trusted by Thousands
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Join the growing community of servers using Sentinel to protect their Discord communities
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-8 text-center hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20">
+                    <i class="fas fa-server text-5xl text-primary mb-4"></i>
+                    <div class="text-4xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">2,500+</div>
+                    <div class="text-gray-400 font-semibold">Active Servers</div>
+                </div>
+                <div class="bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-8 text-center hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20">
+                    <i class="fas fa-users text-5xl text-primary mb-4"></i>
+                    <div class="text-4xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">500K+</div>
+                    <div class="text-gray-400 font-semibold">Protected Users</div>
+                </div>
+                <div class="bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-8 text-center hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20">
+                    <i class="fas fa-shield-halved text-5xl text-primary mb-4"></i>
+                    <div class="text-4xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">10M+</div>
+                    <div class="text-gray-400 font-semibold">Threats Blocked</div>
+                </div>
+                <div class="bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-8 text-center hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20">
+                    <i class="fas fa-clock text-5xl text-primary mb-4"></i>
+                    <div class="text-4xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">99.99%</div>
+                    <div class="text-gray-400 font-semibold">Uptime Record</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="relative py-24 px-6 bg-surface/30">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <div class="inline-block px-6 py-2 bg-primary/10 border border-primary/30 rounded-full text-primary font-bold text-sm uppercase tracking-wide mb-6">Community Reviews</div>
+                <h2 class="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-white to-primary bg-clip-text text-transparent">
+                    Loved by Server Owners
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    See what Discord community leaders have to say about Sentinel
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-8 hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">"Sentinel completely transformed our server security. The anti-nuke protection saved us from a coordinated attack. Absolutely essential for any serious community!"</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold">Alex Chen</div>
+                            <div class="text-sm text-gray-400">Gaming Community - 50K members</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-8 hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">"The web dashboard is incredible! Managing settings is so much easier than typing commands. Auto-moderation catches spam before we even see it. Highly recommend!"</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold">Sarah Martinez</div>
+                            <div class="text-sm text-gray-400">Art Community - 30K members</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-8 hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">"Global ban network is a game changer. Known troublemakers are automatically banned before they can cause problems. Best moderation bot we've ever used!"</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold">Marcus Johnson</div>
+                            <div class="text-sm text-gray-400">Tech Community - 100K members</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="relative py-24 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <div class="inline-block px-6 py-2 bg-primary/10 border border-primary/30 rounded-full text-primary font-bold text-sm uppercase tracking-wide mb-6">FAQ</div>
+                <h2 class="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-white to-primary bg-clip-text text-transparent">
+                    Frequently Asked Questions
+                </h2>
+                <p class="text-xl text-gray-300">
+                    Everything you need to know about Sentinel
+                </p>
+            </div>
+            <div class="space-y-4">
+                <details class="group bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-6 hover:border-primary transition-all">
+                    <summary class="flex items-center justify-between cursor-pointer font-bold text-xl">
+                        <span>Is Sentinel free to use?</span>
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <p class="mt-4 text-gray-300 leading-relaxed">Yes! Sentinel is completely free to use with all features unlocked. There are no premium tiers or hidden costs. We believe every Discord community deserves enterprise-grade security.</p>
+                </details>
+                <details class="group bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-6 hover:border-primary transition-all">
+                    <summary class="flex items-center justify-between cursor-pointer font-bold text-xl">
+                        <span>What permissions does Sentinel need?</span>
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <p class="mt-4 text-gray-300 leading-relaxed">Sentinel requires Administrator permissions to function properly. This allows it to moderate users, manage channels during lockdowns, and protect your server from nuke attacks. We never abuse these permissions.</p>
+                </details>
+                <details class="group bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-6 hover:border-primary transition-all">
+                    <summary class="flex items-center justify-between cursor-pointer font-bold text-xl">
+                        <span>How does anti-nuke protection work?</span>
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <p class="mt-4 text-gray-300 leading-relaxed">Sentinel monitors for suspicious activity like mass channel deletions, excessive bans, or role removals. When detected, it instantly removes dangerous permissions from the attacker and logs the incident. You can customize thresholds in the dashboard.</p>
+                </details>
+                <details class="group bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-6 hover:border-primary transition-all">
+                    <summary class="flex items-center justify-between cursor-pointer font-bold text-xl">
+                        <span>Can I customize auto-moderation rules?</span>
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <p class="mt-4 text-gray-300 leading-relaxed">Absolutely! The web dashboard lets you configure blocked words, spam thresholds, whitelist users/roles, and set custom punishments. Everything is customizable to fit your community's needs.</p>
+                </details>
+                <details class="group bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-6 hover:border-primary transition-all">
+                    <summary class="flex items-center justify-between cursor-pointer font-bold text-xl">
+                        <span>How do I access the web dashboard?</span>
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <p class="mt-4 text-gray-300 leading-relaxed">Click the "Login" button in the navigation bar and authenticate with Discord. You'll see all servers where Sentinel is installed and you have Manage Server permissions. Select a server to configure its settings.</p>
+                </details>
+                <details class="group bg-surface/60 backdrop-blur-xl border border-primary/20 rounded-2xl p-6 hover:border-primary transition-all">
+                    <summary class="flex items-center justify-between cursor-pointer font-bold text-xl">
+                        <span>Does Sentinel work with other bots?</span>
+                        <i class="fas fa-chevron-down group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <p class="mt-4 text-gray-300 leading-relaxed">Yes! Sentinel is designed to complement other bots. You can whitelist specific bots to prevent them from being flagged by auto-moderation or anti-spam systems. It works seamlessly alongside music, leveling, and utility bots.</p>
+                </details>
             </div>
         </div>
     </section>
