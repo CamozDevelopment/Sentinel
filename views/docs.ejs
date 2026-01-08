@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - Sentinel Bot</title>
+    <meta name="description" content="Complete documentation for Sentinel bot setup, configuration, and features.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="/css/style.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #5865f2;
+            --secondary: #7289da;
+            --accent: #eb459e;
+            --success: #3ba55d;
+            --dark: #0a0e27;
+            --dark-alt: #0f1629;
+            --surface: #1a1f3a;
+            --text: #ffffff;
+            --text-secondary: #b9bbbe;
+            --text-muted: #72767d;
+            --border: rgba(88, 101, 242, 0.2);
+            --glow: rgba(88, 101, 242, 0.4);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(180deg, var(--dark) 0%, var(--dark-alt) 50%, var(--surface) 100%);
+            overflow: hidden;
+        }
+
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.2;
+            animation: float 25s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--primary), transparent);
+            top: -200px;
+            left: -100px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(80px, -80px); }
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.25rem 6%;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 46px;
+            height: 46px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 24px var(--glow);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .nav-link.active {
+            color: var(--text);
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--text);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.625rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text);
+            box-shadow: 0 8px 24px var(--glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(88, 101, 242, 0.6);
+        }
+
+        .docs-container {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding-top: 90px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar {
+            width: 280px;
+            padding: 2rem;
+            position: sticky;
+            top: 90px;
+            height: calc(100vh - 90px);
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+            background: rgba(15, 22, 41, 0.6);
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+        }
+
+        .sidebar-title:first-child {
+            margin-top: 0;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            padding: 0.625rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(88, 101, 242, 0.12);
+            color: var(--text);
+        }
+
+        .sidebar-nav a.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text);
+        }
+
+        .content {
+            flex: 1;
+            padding: 4rem 6%;
+            max-width: 900px;
+        }
+
+        .doc-header {
+            margin-bottom: 3rem;
+        }
+
+        .doc-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .doc-description {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+        }
+
+        .doc-section {
+            margin-bottom: 4rem;
+        }
+
+        .doc-section h2 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+
+        .doc-section h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem;
+            color: var(--text);
+        }
+
+        .doc-section h4 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin: 1.5rem 0 1rem;
+            color: var(--text-secondary);
+        }
+
+        .doc-section p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+        }
+
+        .doc-section ul,
+        .doc-section ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .doc-section li {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 0.75rem;
+        }
+
+        .doc-section strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            font-family: 'Courier New', monospace;
+            color: var(--text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .inline-code {
+            background: rgba(88, 101, 242, 0.15);
+            color: var(--primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .info-box {
+            background: rgba(59, 165, 93, 0.12);
+            border-left: 4px solid var(--success);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-box-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
+        }
+
+        .info-box p {
+            margin-bottom: 0;
+        }
+
+        .warning-box {
+            background: rgba(250, 166, 26, 0.12);
+            border-left: 4px solid var(--warning);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            color: var(--warning);
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
+        }
+
+        .warning-box p {
+            margin-bottom: 0;
+        }
+
+        .steps {
+            counter-reset: step;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .steps li {
+            counter-increment: step;
+            position: relative;
+            padding-left: 3.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .steps li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            position: relative;
+            padding: 4rem 6%;
+            background: rgba(10, 14, 39, 0.95);
+            border-top: 1px solid var(--border);
+            text-align: center;
+            z-index: 1;
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .doc-title {
+                font-size: 2.5rem;
+            }
+
+            .content {
+                padding: 3rem 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+    </div>
+
+    <nav>
+        <a href="/" class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+            <span>Sentinel</span>
+        </a>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/commands" class="nav-link">Commands</a>
+            <a href="/docs" class="nav-link active">Docs</a>
+            <% if (user) { %>
+                <a href="/dashboard" class="btn btn-primary">
+                    <i class="fas fa-gauge-high"></i>
+                    Dashboard
+                </a>
+            <% } else { %>
+                <a href="/login" class="btn btn-primary">
+                    <i class="fab fa-discord"></i>
+                    Login
+                </a>
+            <% } %>
+        </div>
+    </nav>
+
+    <div class="docs-container">
+        <aside class="sidebar">
+            <div class="sidebar-title">Getting Started</div>
+            <ul class="sidebar-nav">
+                <li><a href="#introduction" class="active">Introduction</a></li>
+                <li><a href="#setup">Setup Guide</a></li>
+                <li><a href="#quickstart">Quick Start</a></li>
+            </ul>
+
+            <div class="sidebar-title">Features</div>
+            <ul class="sidebar-nav">
+                <li><a href="#auto-moderation">Auto-Moderation</a></li>
+                <li><a href="#anti-nuke">Anti-Nuke</a></li>
+                <li><a href="#anti-spam">Anti-Spam</a></li>
+                <li><a href="#global-bans">Global Bans</a></li>
+                <li><a href="#logging">Logging System</a></li>
+                <li><a href="#dashboard">Web Dashboard</a></li>
+            </ul>
+
+            <div class="sidebar-title">Configuration</div>
+            <ul class="sidebar-nav">
+                <li><a href="#server-settings">Server Settings</a></li>
+                <li><a href="#permissions">Permissions</a></li>
+                <li><a href="#customization">Customization</a></li>
+            </ul>
+
+            <div class="sidebar-title">Support</div>
+            <ul class="sidebar-nav">
+                <li><a href="#troubleshooting">Troubleshooting</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <div class="doc-header" id="introduction">
+                <h1 class="doc-title">Documentation</h1>
+                <p class="doc-description">
+                    Complete guide to setting up and using Sentinel bot for your Discord server. 
+                    Learn about features, configuration, and best practices for server security.
+                </p>
+            </div>
+
+            <section class="doc-section" id="setup">
+                <h2>Setup Guide</h2>
+                <p>
+                    Getting started with Sentinel is quick and easy. Follow these steps to add the bot 
+                    to your server and configure your first security settings.
+                </p>
+
+                <h3>Prerequisites</h3>
+                <ul>
+                    <li>Administrator permissions in your Discord server</li>
+                    <li>Understanding of basic Discord permissions and roles</li>
+                </ul>
+
+                <h3>Installation Steps</h3>
+                <ol class="steps">
+                    <li>
+                        <strong>Invite the Bot</strong><br>
+                        Click the "Add to Server" button and select your server from the dropdown. 
+                        Make sure to grant all requested permissions for full functionality.
+                    </li>
+                    <li>
+                        <strong>Login to Dashboard</strong><br>
+                        Visit the web dashboard and login with Discord. Select your server from the list 
+                        to access the configuration panel.
+                    </li>
+                    <li>
+                        <strong>Configure Settings</strong><br>
+                        Set up your logging channels, moderation settings, and security features through 
+                        the dashboard or using <span class="inline-code">/settings</span> command.
+                    </li>
+                    <li>
+                        <strong>Test Features</strong><br>
+                        Try basic commands like <span class="inline-code">/help</span> and 
+                        <span class="inline-code">/botinfo</span> to verify the bot is working correctly.
+                    </li>
+                </ol>
+
+                <div class="info-box">
+                    <div class="info-box-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Pro Tip
+                    </div>
+                    <p>
+                        For best results, place the Sentinel bot role near the top of your role hierarchy. 
+                        This ensures it can moderate users with lower roles.
+                    </p>
+                </div>
+            </section>
+
+            <section class="doc-section" id="quickstart">
+                <h2>Quick Start</h2>
+                <p>Get up and running in minutes with these essential configurations:</p>
+
+                <h4>1. Set Up Logging</h4>
+                <div class="code-block">
+                    <code>/serversettings<br>→ Select "Logging Channel"<br>→ Choose your logs channel</code>
+                </div>
+
+                <h4>2. Enable Auto-Moderation</h4>
+                <div class="code-block">
+                    <code>/serversettings<br>→ Toggle "Auto-Moderation"<br>→ Configure blocked words</code>
+                </div>
+
+                <h4>3. Configure Anti-Spam</h4>
+                <div class="code-block">
+                    <code>/serversettings<br>→ Toggle "Anti-Spam System"<br>→ Set thresholds</code>
+                </div>
+            </section>
+
+            <section class="doc-section" id="auto-moderation">
+                <h2>Auto-Moderation</h2>
+                <p>
+                    Sentinel's auto-moderation system automatically detects and removes inappropriate content, 
+                    spam, and rule violations without manual intervention.
+                </p>
+
+                <h3>Features</h3>
+                <ul>
+                    <li><strong>Blocked Words:</strong> Custom word blacklist with wildcard support (e.g., *bad*)</li>
+                    <li><strong>Zalgo Detection:</strong> Prevents zalgo text and Unicode abuse</li>
+                    <li><strong>Emoji Spam:</strong> Limits excessive emoji usage in messages</li>
+                    <li><strong>Mass Mentions:</strong> Blocks messages with too many user/role mentions</li>
+                    <li><strong>Link Filtering:</strong> Optional restriction of external links</li>
+                </ul>
+
+                <h3>Configuration</h3>
+                <p>Access auto-moderation settings through the dashboard or use these commands:</p>
+                <div class="code-block">
+                    <code>/blockedwords add [word]     # Add blocked word<br>/blockedwords remove [word]  # Remove blocked word<br>/blockedwords list           # View all blocked words</code>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-box-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Important
+                    </div>
+                    <p>
+                        Users with <strong>Manage Messages</strong> permission are exempt from auto-moderation. 
+                        Use <span class="inline-code">/whitelist</span> to exempt specific users.
+                    </p>
+                </div>
+            </section>
+
+            <section class="doc-section" id="anti-nuke">
+                <h2>Anti-Nuke Protection</h2>
+                <p>
+                    Protect your server from malicious attacks with real-time detection of mass deletions, 
+                    excessive bans, and other destructive actions.
+                </p>
+
+                <h3>Protected Actions</h3>
+                <ul>
+                    <li><strong>Channel Deletion:</strong> Detects mass channel deletion attempts</li>
+                    <li><strong>Role Deletion:</strong> Monitors excessive role removals</li>
+                    <li><strong>Ban Waves:</strong> Catches mass ban attempts</li>
+                    <li><strong>Kick Spam:</strong> Prevents rapid member kicks</li>
+                </ul>
+
+                <h3>Response Actions</h3>
+                <p>When a nuke attempt is detected, Sentinel can:</p>
+                <ul>
+                    <li>Immediately remove dangerous permissions from the attacker</li>
+                    <li>Ban the offending user automatically</li>
+                    <li>Send alerts to your configured log channel</li>
+                    <li>Notify server administrators via DM</li>
+                </ul>
+
+                <div class="info-box">
+                    <div class="info-box-title">
+                        <i class="fas fa-shield-halved"></i>
+                        Best Practice
+                    </div>
+                    <p>
+                        Enable anti-nuke protection immediately after adding the bot. Set thresholds 
+                        appropriate for your server size (smaller servers should use lower thresholds).
+                    </p>
+                </div>
+            </section>
+
+            <section class="doc-section" id="anti-spam">
+                <h2>Anti-Spam System</h2>
+                <p>
+                    Advanced spam detection monitors message patterns and automatically times out 
+                    users who spam or flood channels.
+                </p>
+
+                <h3>Detection Methods</h3>
+                <ul>
+                    <li><strong>Duplicate Messages:</strong> Tracks identical message repetition</li>
+                    <li><strong>Message Rate:</strong> Monitors messages per second</li>
+                    <li><strong>Image Spam:</strong> Detects rapid image/attachment posting</li>
+                    <li><strong>Link Spam:</strong> Prevents excessive link sharing</li>
+                </ul>
+
+                <h3>Configurable Thresholds</h3>
+                <div class="code-block">
+                    <code># Configure via dashboard:<br>Max Messages: 5 messages in 5 seconds<br>Max Duplicates: 3 identical messages<br>Max Images: 3 images in 10 seconds</code>
+                </div>
+
+                <h3>Whitelist System</h3>
+                <p>
+                    Exempt trusted users, roles, or channels from anti-spam using the whitelist command:
+                </p>
+                <div class="code-block">
+                    <code>/whitelist add @user     # Exempt a user<br>/whitelist remove @user  # Remove exemption</code>
+                </div>
+            </section>
+
+            <section class="doc-section" id="global-bans">
+                <h2>Global Ban Network</h2>
+                <p>
+                    Join a cross-server ban network to protect your community from known troublemakers 
+                    across multiple Discord servers.
+                </p>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li>Enable global bans in your server settings</li>
+                    <li>When you globally ban a user, they're added to the network</li>
+                    <li>Other servers with global bans enabled will automatically ban them</li>
+                    <li>Users can appeal through the built-in appeal system</li>
+                </ol>
+
+                <h3>Issuing Global Bans</h3>
+                <div class="code-block">
+                    <code>/globalban @user [reason]  # Issue cross-server ban<br>/globalbans                 # View all global bans</code>
+                </div>
+
+                <h3>Appeal System</h3>
+                <p>Users can submit appeals which server administrators can review:</p>
+                <div class="code-block">
+                    <code>/appeal [reason]            # User submits appeal<br>/reviewappeal @user approve  # Accept appeal<br>/reviewappeal @user deny     # Reject appeal</code>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-box-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Caution
+                    </div>
+                    <p>
+                        Global bans are powerful. Only use them for severe violations like raiding, 
+                        harassment, or illegal content. Misuse may result in removal from the network.
+                    </p>
+                </div>
+            </section>
+
+            <section class="doc-section" id="logging">
+                <h2>Logging System</h2>
+                <p>
+                    Comprehensive audit logs track all server activity, moderation actions, and security events.
+                </p>
+
+                <h3>Logged Events</h3>
+                <ul>
+                    <li><strong>Messages:</strong> Edits, deletions, bulk deletes</li>
+                    <li><strong>Members:</strong> Joins, leaves, nickname changes</li>
+                    <li><strong>Roles:</strong> Role additions, removals, updates</li>
+                    <li><strong>Channels:</strong> Creation, deletion, permission changes</li>
+                    <li><strong>Moderation:</strong> Bans, kicks, timeouts, warnings</li>
+                    <li><strong>Security:</strong> Anti-nuke triggers, spam detections</li>
+                </ul>
+
+                <h3>Setup</h3>
+                <ol>
+                    <li>Create a dedicated logging channel (e.g., #mod-logs)</li>
+                    <li>Configure it in dashboard or via <span class="inline-code">/serversettings</span></li>
+                    <li>Ensure only moderators can view this channel</li>
+                </ol>
+
+                <div class="info-box">
+                    <div class="info-box-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Tip
+                    </div>
+                    <p>
+                        Create separate channels for different log types (moderation logs, member logs, 
+                        message logs) for better organization in large servers.
+                    </p>
+                </div>
+            </section>
+
+            <section class="doc-section" id="dashboard">
+                <h2>Web Dashboard</h2>
+                <p>
+                    Manage your entire server configuration through a beautiful, intuitive web interface 
+                    without typing commands.
+                </p>
+
+                <h3>Features</h3>
+                <ul>
+                    <li><strong>Visual Configuration:</strong> Select roles and channels from dropdowns</li>
+                    <li><strong>Real-Time Updates:</strong> Changes apply instantly without bot restart</li>
+                    <li><strong>Bulk Editing:</strong> Add/remove multiple blocked words at once</li>
+                    <li><strong>Quick Actions:</strong> Save with Ctrl+S, toggle features with one click</li>
+                    <li><strong>Mobile Friendly:</strong> Full functionality on phones and tablets</li>
+                </ul>
+
+                <h3>Accessing the Dashboard</h3>
+                <ol>
+                    <li>Visit the dashboard URL (linked in bot status)</li>
+                    <li>Click "Login with Discord"</li>
+                    <li>Authorize the OAuth2 connection</li>
+                    <li>Select your server from the server list</li>
+                    <li>Configure settings visually</li>
+                </ol>
+            </section>
+
+            <section class="doc-section" id="server-settings">
+                <h2>Server Settings</h2>
+                <p>
+                    Configure all aspects of Sentinel's behavior for your server through settings.
+                </p>
+
+                <h3>Essential Settings</h3>
+                <ul>
+                    <li><strong>Logging Channel:</strong> Where logs are sent</li>
+                    <li><strong>Moderator Role:</strong> Role with moderation permissions</li>
+                    <li><strong>Auto-Moderation:</strong> Enable/disable content filtering</li>
+                    <li><strong>Anti-Spam:</strong> Toggle spam protection</li>
+                    <li><strong>Anti-Nuke:</strong> Enable attack prevention</li>
+                    <li><strong>Global Bans:</strong> Join cross-server ban network</li>
+                </ul>
+
+                <h3>Advanced Options</h3>
+                <ul>
+                    <li>Custom blocked word patterns</li>
+                    <li>Spam detection thresholds</li>
+                    <li>Whitelisted users/roles/channels</li>
+                    <li>Punishment escalation settings</li>
+                </ul>
+            </section>
+
+            <section class="doc-section" id="permissions">
+                <h2>Permissions</h2>
+                <p>
+                    Sentinel requires specific permissions to function properly. Here's what each permission is used for:
+                </p>
+
+                <h3>Required Permissions</h3>
+                <ul>
+                    <li><strong>Manage Server:</strong> Access server settings and configuration</li>
+                    <li><strong>Manage Roles:</strong> Remove dangerous roles during nuke attempts</li>
+                    <li><strong>Manage Channels:</strong> Lock/unlock channels, create logs</li>
+                    <li><strong>Kick Members:</strong> Execute kick commands</li>
+                    <li><strong>Ban Members:</strong> Execute ban commands and global bans</li>
+                    <li><strong>Moderate Members:</strong> Issue timeouts and manage moderation</li>
+                    <li><strong>Manage Messages:</strong> Delete rule-breaking messages, bulk purge</li>
+                    <li><strong>Read Messages:</strong> Monitor for auto-moderation triggers</li>
+                    <li><strong>Send Messages:</strong> Send moderation notifications</li>
+                    <li><strong>Embed Links:</strong> Display rich embed responses</li>
+                    <li><strong>View Audit Log:</strong> Track who made changes for logging</li>
+                </ul>
+
+                <div class="warning-box">
+                    <div class="warning-box-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Permission Hierarchy
+                    </div>
+                    <p>
+                        The bot's role must be higher than the roles of users you want to moderate. 
+                        Users with roles higher than the bot cannot be timed out, kicked, or banned.
+                    </p>
+                </div>
+            </section>
+
+            <section class="doc-section" id="troubleshooting">
+                <h2>Troubleshooting</h2>
+                <p>Common issues and their solutions:</p>
+
+                <h3>Bot Not Responding</h3>
+                <ul>
+                    <li>Verify the bot is online (green status in member list)</li>
+                    <li>Check if the bot has required permissions in that channel</li>
+                    <li>Try re-inviting the bot with the correct permission scope</li>
+                </ul>
+
+                <h3>Cannot Moderate Certain Users</h3>
+                <ul>
+                    <li>Ensure bot's role is higher than the target user's highest role</li>
+                    <li>Check if the user has Administrator permission (cannot be moderated)</li>
+                    <li>Verify the bot has required moderation permissions</li>
+                </ul>
+
+                <h3>Auto-Moderation Not Working</h3>
+                <ul>
+                    <li>Confirm auto-moderation is enabled in settings</li>
+                    <li>Check if the user is whitelisted or has mod permissions</li>
+                    <li>Verify blocked words are configured correctly</li>
+                </ul>
+
+                <h3>Dashboard Login Issues</h3>
+                <ul>
+                    <li>Clear browser cache and cookies</li>
+                    <li>Ensure you have Manage Server permission</li>
+                    <li>Try a different browser or incognito mode</li>
+                </ul>
+            </section>
+
+            <section class="doc-section" id="faq">
+                <h2>Frequently Asked Questions</h2>
+
+                <h4>Q: Is Sentinel free to use?</h4>
+                <p>Yes, Sentinel is completely free with all features included.</p>
+
+                <h4>Q: Can I customize the bot's responses?</h4>
+                <p>Currently, custom messages are not supported, but this feature is planned for a future update.</p>
+
+                <h4>Q: How many servers can use Sentinel?</h4>
+                <p>There's no limit. Sentinel can be added to unlimited servers.</p>
+
+                <h4>Q: Does Sentinel store message content?</h4>
+                <p>No, Sentinel only stores metadata (timestamps, user IDs) for moderation logs. Message content is not stored.</p>
+
+                <h4>Q: Can I self-host Sentinel?</h4>
+                <p>The source code is not currently public, but this may change in the future.</p>
+
+                <h4>Q: What happens if the bot goes offline?</h4>
+                <p>Your server settings are preserved. When the bot comes back online, all configurations will still be active.</p>
+
+                <h4>Q: Can I suggest new features?</h4>
+                <p>Absolutely! Join our support server (linked in bot status) to submit feature requests.</p>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p class="footer-text">
+            © 2026 Sentinel Bot. All rights reserved.
+        </p>
+    </footer>
+
+    <script>
+        // Smooth scroll for sidebar links
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Update active state
+                    document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Update active link on scroll
+        const sections = document.querySelectorAll('.doc-section');
+        const navLinks = document.querySelectorAll('.sidebar-nav a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

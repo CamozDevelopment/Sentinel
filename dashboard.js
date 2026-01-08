@@ -123,6 +123,20 @@ app.get('/logout', (req, res) => {
     req.logout(() => res.redirect('/'));
 });
 
+// Commands page
+app.get('/commands', (req, res) => {
+    res.render('commands', {
+        user: req.user
+    });
+});
+
+// Documentation page
+app.get('/docs', (req, res) => {
+    res.render('docs', {
+        user: req.user
+    });
+});
+
 // Dashboard main page
 app.get('/dashboard', checkAuth, async (req, res) => {
     try {
