@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const serverConfig = require('./utils/serverConfig');
+const { Client, GatewayIntentBits } = require('discord.js');
 
 // Load config from environment variables or fallback to config.json
 let config;
@@ -14,6 +15,25 @@ try {
     config = require('./config.json');
 } catch (e) {
     config = {};
+}
+
+// Create Discord client for API access
+const botClient = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers
+    ]
+});
+
+// Login bot client
+const BOT_TOKEN = process.env.TOKEN || process.env.DISCORD_TOKEN || config.token;
+if (BOT_TOKEN) {
+    botClient.login(BOT_TOKEN).then(() => {
+        console.log('✅ Bot client connected for dashboard API access');
+    }).catch(err => {
+        console.error('⚠️  Bot client failed to connect:', err.message);
+        console.log('ℹ️  Dashboard will work but roles/channels won\'t be available');
+    });
 }
 
 // Create Express app
@@ -140,17 +160,56 @@ app.get('/dashboard/:guildId', checkAuth, async (req, res) => {
         // Load server config
         const serverCfg = serverConfig.loadServerConfig(guildId, userGuild.name);
 
+        // Fetch guild data from Discord
+        let roles = [];
+        let channels = [];
+        let memberCount = null;
+
+        try {
+            if (botClient.isReady()) {
+                const guild = await botClient.guilds.fetch(guildId);
+                if (guild) {
+                    // Fetch roles
+                    const fetchedRoles = await guild.roles.fetch();
+                    roles = fetchedRoles
+                        .filter(role => role.name !== '@everyone')
+                        .sort((a, b) => b.position - a.position)
+                        .map(role => ({
+                            id: role.id,
+                            name: role.name,
+                            color: role.hexColor,
+                            position: role.position
+                        }));
+
+                    // Fetch channels
+                    const fetchedChannels = await guild.channels.fetch();
+                    channels = fetchedChannels
+                        .filter(channel => channel.type === 0) // Text channels only
+                        .sort((a, b) => a.position - b.position)
+                        .map(channel => ({
+                            id: channel.id,
+                            name: channel.name,
+                            type: channel.type
+                        }));
+
+                    memberCount = guild.memberCount;
+                }
+            }
+        } catch (err) {
+            console.error('Error fetching guild data:', err.message);
+        }
+
         res.render('server', {
             user: req.user,
             guild: {
                 id: userGuild.id,
                 name: userGuild.name,
                 icon: userGuild.icon ? `https://cdn.discordapp.com/icons/${userGuild.id}/${userGuild.icon}.png` : null,
-                memberCount: null // Not available without bot client
+                memberCount: memberCount
             },
             config: serverCfg,
-            roles: [], // Will be loaded via API if needed
-            channels: [] // Will be loaded via API if needed
+            roles: roles,
+            channels: channels
         });
     } catch (error) {
         console.error('Server page error:', error);
